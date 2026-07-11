@@ -1,0 +1,4 @@
+github.com/dombox/uuidv7 v1.0.0 h1:54UBtM9q8/XUQZowmrXVdGe5LQHK8Zo0r5P85eG9ryA=
+github.com/dombox/uuidv7 v1.0.0/go.mod h1:t4ELftoSBJSSRVheFmPwGCZIyYQJl3NoLE0ygT4W1VA=
+golang.org/x/crypto v0.54.0 h1:YLIA59K4fiNzHzjnZt2tUJQjQtUWfWbeHBqKtk3eScw=
+golang.org/x/crypto v0.54.0/go.mod h1:KWL8ny2AZdGR2cWmzeHrp2azQPGogOv+HeQaVEXC2dk=
