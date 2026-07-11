@@ -6,11 +6,15 @@ on:
       - main
       - master
   pull_request:
+    branches:
+      - main
+      - master
 
 permissions:
   contents: read
 
 jobs:
+  
   checks:
     runs-on: ubuntu-latest
 
