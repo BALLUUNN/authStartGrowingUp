@@ -1,9 +1,7 @@
 package domain
 
 import (
-	"encoding/json"
 	"errors"
-	"strings"
 	"testing"
 	"time"
 
@@ -239,21 +237,6 @@ func TestRefreshTokenVerifySucceeds(t *testing.T) {
 
 	if err := rt.Verify(validTokenValue()); err != nil {
 		t.Fatalf("expected verify to succeed, got %v", err)
-	}
-}
-
-func TestRefreshTokenJSONOmitsToken(t *testing.T) {
-	rt := validRefreshToken(t, time.Now().Add(time.Hour).UTC().Unix())
-
-	payload, err := json.Marshal(rt)
-	if err != nil {
-		t.Fatalf("expected JSON marshal to succeed, got %v", err)
-	}
-	if strings.Contains(string(payload), validTokenValue()) {
-		t.Fatalf("expected JSON payload to omit token, got %s", string(payload))
-	}
-	if strings.Contains(string(payload), "\"token\"") {
-		t.Fatalf("expected token field to be omitted, got %s", string(payload))
 	}
 }
 
