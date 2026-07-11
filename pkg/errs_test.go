@@ -19,8 +19,8 @@ func TestAppErrorSupportsErrorsIs(t *testing.T) {
 
 func TestNewValidationErrorsAggregatesValidationErrors(t *testing.T) {
 	err := NewValidationErrors(
-		NewValidationError("invalid email", nil, "email", "bad"),
-		NewValidationError("invalid password", nil, "password", "[redacted]"),
+		NewValidationError("invalid email", nil).WithFieldValue("email", "bad"),
+		NewValidationError("invalid password", nil).WithFieldValue("password", "[redacted]"),
 	)
 	if err == nil {
 		t.Fatal("expected aggregated validation error, got nil")
@@ -42,7 +42,7 @@ func TestNewValidationErrorsReturnsFirstNonValidationError(t *testing.T) {
 	internalErr := NewInternalError(errors.New("root"))
 
 	err := NewValidationErrors(
-		NewValidationError("invalid email", nil, "email", "bad"),
+		NewValidationError("invalid email", nil).WithFieldValue("email", "bad"),
 		internalErr,
 	)
 	if err == nil {
@@ -79,5 +79,17 @@ func TestNewValidationErrorsIgnoresTypedNilAppError(t *testing.T) {
 	err := NewValidationErrors(validationErr)
 	if err != nil {
 		t.Fatalf("expected nil error, got %#v", err)
+	}
+}
+
+func TestTokenErrorsSupportErrorsIs(t *testing.T) {
+	invalidTokenErr := NewInvalidTokenError("refresh token is invalid", nil)
+	expiredTokenErr := NewExpiredTokenError("refresh token expired", nil)
+
+	if !errors.Is(invalidTokenErr, ErrInvalidToken) {
+		t.Fatal("expected invalid token error to match ErrInvalidToken")
+	}
+	if !errors.Is(expiredTokenErr, ErrExpiredToken) {
+		t.Fatal("expected expired token error to match ErrExpiredToken")
 	}
 }

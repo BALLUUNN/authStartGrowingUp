@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 
 	errs "github.com/BALLUUNN/authStartGrowingUp/pkg"
@@ -45,6 +47,26 @@ func TestCreateUserNormalizesAndHashesPassword(t *testing.T) {
 	}
 }
 
+func TestCreateUserRejectsPasswordLongerThanBcryptLimit(t *testing.T) {
+	password := strings.Repeat("A", 71) + "a1"
+
+	_, err := CreateUser("valid_user", password, "test@example.com", "+14155552671")
+	if err == nil {
+		t.Fatal("expected validation error, got nil")
+	}
+	if !errors.Is(err, errs.ErrValidation) {
+		t.Fatalf("expected validation error, got %v", err)
+	}
+
+	var appErr *errs.AppError
+	if !errors.As(err, &appErr) {
+		t.Fatalf("expected AppError, got %T", err)
+	}
+	if appErr.Field() != "password" {
+		t.Fatalf("expected password field, got %q", appErr.Field())
+	}
+}
+
 func TestCheckPasswordReturnsWrongPassword(t *testing.T) {
 	user, err := CreateUser("valid_user", "Password1", "test@example.com", "+14155552671")
 	if err != nil {
@@ -69,5 +91,35 @@ func TestCheckPasswordReturnsInternalForInvalidHash(t *testing.T) {
 	}
 	if !errors.Is(err, errs.ErrInternal) {
 		t.Fatalf("expected internal error, got %v", err)
+	}
+}
+
+func TestCheckPasswordReturnsInternalForEmptyStoredHash(t *testing.T) {
+	user := &User{}
+
+	err := user.CheckPassword("Password1")
+	if err == nil {
+		t.Fatal("expected internal error, got nil")
+	}
+	if !errors.Is(err, errs.ErrInternal) {
+		t.Fatalf("expected internal error, got %v", err)
+	}
+}
+
+func TestUserJSONOmitsPassword(t *testing.T) {
+	user, err := CreateUser("valid_user", "Password1", "test@example.com", "+14155552671")
+	if err != nil {
+		t.Fatalf("expected user to be created, got %v", err)
+	}
+
+	payload, err := json.Marshal(user)
+	if err != nil {
+		t.Fatalf("expected JSON marshal to succeed, got %v", err)
+	}
+	if strings.Contains(string(payload), "Password1") {
+		t.Fatalf("expected JSON payload to omit password, got %s", string(payload))
+	}
+	if strings.Contains(string(payload), "\"password\"") {
+		t.Fatalf("expected password field to be omitted, got %s", string(payload))
 	}
 }
