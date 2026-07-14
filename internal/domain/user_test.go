@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	errs "github.com/BALLUUNN/authStartGrowingUp/pkg"
+	errs "github.com/BALLUUNN/authStartGrowingUp/pkg/errs"
 )
 
 func TestCreateUserReturnsMultipleValidationErrors(t *testing.T) {
