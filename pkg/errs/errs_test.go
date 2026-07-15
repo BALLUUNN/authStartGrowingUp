@@ -2,6 +2,7 @@ package errs
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -92,4 +93,41 @@ func TestTokenErrorsSupportErrorsIs(t *testing.T) {
 	if !errors.Is(expiredTokenErr, ErrExpiredToken) {
 		t.Fatal("expected expired token error to match ErrExpiredToken")
 	}
+}
+
+func ExampleAppError_WithFieldValue() {
+	err := NewValidationError("invalid email", nil).WithFieldValue("email", "bad@example.com")
+
+	fmt.Println(err.Message())
+	fmt.Println(err.Field())
+	fmt.Println(err.Value())
+	fmt.Println(errors.Is(err, ErrValidation))
+
+	// Output:
+	// invalid email
+	// email
+	// bad@example.com
+	// true
+}
+
+func ExampleNewValidationErrors() {
+	err := NewValidationErrors(
+		NewValidationError("invalid email", nil).WithFieldValue("email", "bad@example.com"),
+		NewValidationError("password is too short", nil).WithFieldValue("password", "[redacted]"),
+	)
+
+	fmt.Println(errors.Is(err, ErrValidation))
+
+	var validationErrs ValidationErrors
+	fmt.Println(errors.As(err, &validationErrs))
+
+	for _, item := range validationErrs.Items() {
+		fmt.Printf("%s: %s (%s=%v)\n", item.Code(), item.Message(), item.Field(), item.Value())
+	}
+
+	// Output:
+	// true
+	// true
+	// validation_error: invalid email (email=bad@example.com)
+	// validation_error: password is too short (password=[redacted])
 }

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security disclosure
+    url: https://github.com/BALLUUNN/authStartGrowingUp/security/advisories/new
+    about: Не публикуйте детали уязвимостей в обычных issue. Используйте приватный security advisory.
+  - name: Contribution guide
+    url: https://github.com/BALLUUNN/authStartGrowingUp/blob/main/CONTRIBUTING.md
+    about: Правила работы с задачами, тестами, review и безопасностью.

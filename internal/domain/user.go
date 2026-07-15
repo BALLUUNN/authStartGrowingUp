@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	errs "github.com/BALLUUNN/authStartGrowingUp/pkg"
+	errs "github.com/BALLUUNN/authStartGrowingUp/pkg/errs"
 	"github.com/dombox/uuidv7"
 	"golang.org/x/crypto/bcrypt"
 )

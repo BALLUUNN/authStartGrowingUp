@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	errs "github.com/BALLUUNN/authStartGrowingUp/pkg"
+	errs "github.com/BALLUUNN/authStartGrowingUp/pkg/errs"
 	"github.com/dombox/uuidv7"
 )
 
